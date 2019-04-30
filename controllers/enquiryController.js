@@ -143,3 +143,45 @@ exports.enquiry_delete_get = function (req, res) {
         res.send(true);
     });
 };
+
+
+/* // Email ---
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+		let email = {
+			// to: ['dayshmookh_krushn.ghrcecs@raisoni.net'],
+			to: machine.supplier.email.split(';'),
+			from: 'Krushn Dayshmookh <notifications@ofajassistant.com>', // 
+			subject: `B.Q. for calibration of ${machine.name} from OFAJ`,
+			html: `<p>Kindly give B.Q. for calibration of ${machine.name}. \
+				   	<br>Thanking you! \
+					<br>With regards, \
+					<br>${machine.incharge.name} \
+					<br>${inchagephone}
+					<br>M.M. OFAJ Nagpur<p>`
+		}
+
+
+	console.log('Sending email...')
+
+	sgMail
+		.send(email)
+		.then(result => {
+			//Celebrate
+			console.log('Sent mail.')
+			
+		})
+		.catch(error => {
+			//Log friendly error
+			console.error(error.toString())
+
+			//Extract error msg
+			// const { message, code, response } = error
+
+			//Extract response msg
+			// const { headers, body } = response
+		})
+
+	
+ */
