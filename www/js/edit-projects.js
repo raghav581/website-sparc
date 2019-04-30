@@ -1,10 +1,72 @@
 /* eslint-env browser, jquery */
 
+let projectsVue
+
+project.addEventListener('DOMContentLoaded', function() {
+	showWait()
+	projectsVue = new Vue({
+		el: '#projectList',
+		data: {
+			projects: {
+				urgent: [
+					{
+						name: 'Project 00',
+						_id: 'o00000'
+					},
+					{
+						name: 'Project 10',
+						_id: 'o00010'
+					}
+				],
+				normal: [
+					{
+						name: 'Project 01',
+						_id: 'o00001'
+					},
+					{
+						name: 'Project 11',
+						_id: 'o00011'
+					}
+				]
+			}
+		},
+
+		methods: {
+			poplateProjects: function() {
+				let currentVue = this
+
+				fetch('/api/projects')
+					.then(function(response) {
+						return response.json()
+					})
+					.then(function(projects) {
+						currentVue.projects.urgent = projects.filter(project => project.urgent)
+						currentVue.projects.normal = projects.filter(project => !project.urgent)
+					})
+					.catch(function(error) {
+						M.toast({ html: 'Error occured! Check console for details.' })
+						console.error(error)
+					})
+			},
+			viewProject: function(id) {
+				localStorage.setItem('selectedProject', id)
+				window.location.href = '/project'
+			}
+		},
+
+		mounted: function() {
+			this.poplateProjects()
+			M.AutoInit()
+			hideWait()
+		}
+	})
+})
+
 function deleteproject (id) {
     if(confirm('Are you sure you want to delete?')){
         $.post('/project/' + id + '/delete',{}, function (status){
             if(status){
-                document.location.reload();
+                project.location.reload();
             }
         });
     }
@@ -54,3 +116,4 @@ function clearproject() {
 
 
 }
+

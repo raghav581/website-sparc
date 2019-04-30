@@ -12,7 +12,7 @@ html
                 h3.center Projects
                 .row
                     .col.s12.m9
-                        .collection.with-header
+                        .collection.with-header#project-list
                             each project in projects
                                 a.collection-item.avatar(href='javascript:populate("'+project.id+'")')
                                     img.circle(src='/project/image/'+project.id, alt=project.name)
@@ -108,5 +108,6 @@ html
 
 
         include ./footer.pug
+        script(src="/js/vue.js")
         script(src="/js/edit-projects.js")
 
