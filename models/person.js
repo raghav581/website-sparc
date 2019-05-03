@@ -5,29 +5,31 @@ var Schema = mongoose.Schema;
 var PersonData = new Schema({
 	name: {
 		type: String,
-		required: true,
+		// required: true,
 		max: 100,
-		default: 'unknown'
+		default: ''
 	},
 	position: {
 		type: String,
 		max: 100,
-		default: 'unknown'
+		default: ''
     },
 	education: {
 		type: String,
-		required: true,
+		// required: true,
 		max: 100,
-		default: 0
+		default:''
 	},
-	thought: {
+	comments: {
 		type: String,
 		max: 1000,
-		required: true
+		default:''
+		// required: true
 	},
 	imageLink: {
 		type: String,
-        max: 1000
+		max: 1000,
+		default: ''
 	}
 });
 
