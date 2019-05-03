@@ -79,6 +79,8 @@ var person_controller = require('./controllers/personController');
 
 
 router.get('/person/list', person_controller.person_list);
+// router.post('/person/create', person_controller.person_create);
+router.get('/person/create', person_controller.person_create);
 
 /// ENQUIRY ROUTES ///
 
