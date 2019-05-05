@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node index.js",
-        "debug": "nodemon index.js",
+        "debug": "nodemon -r dotenv/config index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -23,6 +23,7 @@
     },
     "homepage": "https://github.com/dayshmookh/website-sparc#readme",
     "dependencies": {
+        "aws-sdk": "^2.449.0",
         "body-parser": "^1.18.2",
         "cors": "^2.8.4",
         "express": "^4.16.3",
