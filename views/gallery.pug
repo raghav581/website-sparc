@@ -28,7 +28,7 @@ html(lang='en')
                         .col.l4.m6.s12.gallery-item.gallery-expand
                             .gallery-curve-wrapper
                                 a.gallery-cover.gray
-                                    img.responsive-img(src='/project/image/'+project.id, alt='project')
+                                    img.responsive-img(src=project.images[0], alt='project')
                                 .gallery-body
                                     .title-wrapper
                                         h3 #{project.name}
