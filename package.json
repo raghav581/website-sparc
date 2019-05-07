@@ -23,6 +23,7 @@
     },
     "homepage": "https://github.com/dayshmookh/website-sparc#readme",
     "dependencies": {
+        "@sendgrid/mail": "^6.4.0",
         "aws-sdk": "^2.449.0",
         "body-parser": "^1.18.2",
         "cors": "^2.8.4",
