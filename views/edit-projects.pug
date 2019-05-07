@@ -98,7 +98,7 @@ html
                                 .col.s12
                                     ul.collection
                                         li.collection-item(v-for="fileurl in selectedProject.images") {{fileurl}}
-                                            i.material-icons.right.red-text delete
+                                            i.material-icons.right.red-text(@click="deleteImage(fileurl)") delete
                             
                             .row
                                 .col.s12

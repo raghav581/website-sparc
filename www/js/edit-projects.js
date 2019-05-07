@@ -81,7 +81,7 @@ function deleteproject(id) {
 	if (confirm('Are you sure you want to delete?')) {
 		$.post('/project/' + id + '/delete', {}, function(status) {
 			if (status) {
-				project.location.reload()
+				window.location.reload()
 			}
 		})
 	}
@@ -204,4 +204,27 @@ const onFileUpload = function() {
 	// console.log(file)
 	if (file == null) return alert('No file selected.')
 	getSignedRequest(file)
+}
+
+function deleteImage(imageURL) {
+	let filename = imageURL.split('/').slice(-1)[0]
+
+	fetch(`/api/project/image/delete?fileName=${filename}`)
+		.then(function(response) {
+			return response.json()
+		})
+		.then(function(data) {
+			// console.log(data)
+			// if (data) {
+			let index = projectsVue.selectedProject.images.indexOf(imageURL)
+			// console.log(filename)
+			if (index > -1) {
+				projectsVue.selectedProject.images.splice(index, 1)
+			}
+			// }
+		})
+		.catch(function(error) {
+			M.toast({ html: 'Error occured! Check console for details.' })
+			console.error(error)
+		})
 }
