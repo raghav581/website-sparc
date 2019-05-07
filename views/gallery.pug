@@ -20,30 +20,45 @@ html(lang='en')
                     img.active(src='/images/gallery.jpg', alt='control room', style='filter: brightness(50%)')
                     h1.center.white-text(style='font-size:6em; font-weight:bold;margin-top:30vh;letter-spacing:15px;') Form. Space. Architecture.
 
-                           
+
             #portfolio.section.gray
                 .gallery.row
 
                     each project in projects
-                        .col.l4.m6.s12.gallery-item.gallery-expand
-                            .gallery-curve-wrapper
-                                a.gallery-cover.gray
-                                    img.responsive-img(src=project.images[0], alt='project')
-                                .gallery-body
-                                    .title-wrapper
-                                        h3 #{project.name}
-                                        span.price #{project.cost}
-                                        p Finished on #{project.dateformatted}
-                                    h5 Owner #{project.owner}
-                                    p Homepage:
-                                        a(href=project.url) #{project.url}
-                                    p.description #{project.description}
+                        .col.l4.m6.s12.gallery-item.gallery-expand(style="position: absolute; left: 0px; top: 0px;")
+                            .placeholder
+                                .gallery-curve-wrapper
+                                    a.gallery-cover.gray
+                                        img.responsive-img(src=project.images[0], alt='project')
+                                    .gallery-header(style="margin-top: 170px; padding: 20px; min-height: 480px; display: none;")
+                                        span #{project.name}
+                                    .gallery-body
+                                        .title-wrapper
+                                            h3 #{project.name}
+                                        
+                                        h4 Owner: #{project.owner}
+
+                                        p.description Project cost: #{project.cost}
+                                        p.description Finished: #{project.date}
+                                       
+                                        p.description #{project.description}
+
+                                        
+
+                                        .carousel-wrapper
+                                            .carousel
+                                                //- a.carousel-item(href='#one!')	
+                                                each image in project.images
+                                                    a.carousel-item(href=image, target="_blank")
+                                                        img.bordered-sassy(src=image)
+
+                                        .section.center
+                                            iframe.full-width(height="400px" src=project.youtubeUrl)
 
 
-
-                                //- .gallery-action
-                                    a.btn-floating.btn-large.waves-effect.waves-light
-                                        i.material-icons favorite
+                                    .gallery-action
+                                        a.btn-floating.btn-large.waves-effect.waves-light(href=project.projectUrl, target="_blank")
+                                            i.material-icons forward
 
                     else
                         p.col.s12.center There are no projects.
