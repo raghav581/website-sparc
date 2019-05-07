@@ -46,25 +46,11 @@ var ProjectSchema = new Schema({
 			max: 100
 		}
 	],
-	image: {
-		data: {
-			type: Buffer
-		},
-		contentType: {
-			type: String,
-			max: 15,
-			default: 'png'
-		}
-	},
 	images: [
 		{
 			type: String
 		}
 	]
-})
-
-ProjectSchema.virtual('dateformatted').get(function() {
-	return moment(this.date).format('MMMM Do, YYYY')
 })
 
 //Export model
