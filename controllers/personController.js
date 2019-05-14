@@ -11,6 +11,18 @@ exports.person_list = function (req, res) {
     //res.send('NOT IMPLEMENTED: Enquiry list');
 };
 
+
+exports.about_get = function(req, res) {
+	Person.find({}).exec(function(err, list_Person) {
+		if (err) {
+			throw err
+		}
+		res.render('about', { people: list_Person })
+	})
+	//res.send('NOT IMPLEMENTED: Enquiry list');
+}
+
+
 //
 exports.person_create = function (req, res) {
     var person = new Person({

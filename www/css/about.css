@@ -573,3 +573,7 @@ hr {
 .testimonials .content .credit strong {
     color: #ce1b28;
 }
+
+.no-margin {
+    margin: 0;
+}

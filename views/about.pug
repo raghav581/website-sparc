@@ -25,47 +25,69 @@ html
 
         .container
             .row
-                .col.s12.m6
-                    .card.small.grey.lighten-3
-                        .container
-                            div.col.s12(style='padding-top:20px')
-                                blockquote(style='padding-top:20px')
-                                    p
-                                    | Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus.
-                            div.row(style='padding-top:30px')
-                                div.col.s3
+                .col.s12.l6
+                    .card.grey.lighten-3
+                        .card-content
+                            
+                            blockquote
+                                p Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non faucibus.
+                        .card-action
+                            .row.no-margin
+                                .col.s3
                                     img.circle.responsive-img(src='images/pic03.jpg', alt='' style='font-size:10px')
-                                div.col.s9
+                                .col.s9
                                     p.credit(style='font-size:14px')
-                                        | -
                                         strong.red-text Sagar Chaudhari
                                         span
                                             br
-                                            | B.Arch  , M.Arch (U.D)
+                                            | B.Arch, M.Arch (U.D)
                                             br
                                             | Head, Sparc Associates
 
-                //- .col.s12.m6
-                //-     .card.small.grey.lighten-3
-                //-         .container
-                //-             div.col.s12(style='padding-top:20px')
-                //-                 blockquote(style='padding-top:20px')
-                //-                     p
-                //-                     | Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus.
-                //-             div.row(style='padding-top:30px')
-                //-                 div.col.s3
-                //-                     img.circle.responsive-img(src='images/pic03.jpg', alt='' style='font-size:10px')
-                //-                 div.col.s9
-                //-                     p.credit(style='font-size:14px')
-                //-                         | -
-                //-                         strong.red-text Sagar Chaudhari
-                //-                         span
-                //-                             br
-                //-                             | B.Arch  , M.Arch (U.D)
-                //-                             br
-                //-                             | Head, Sparc Associates
 
 
+
+                .col.s12.l6
+                    .card.grey.lighten-3
+                        .card-content
+                            
+                            blockquote
+                                p Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non faucibus.
+                        .card-action
+                            .row.no-margin
+                                .col.s3
+                                    img.circle.responsive-img(src='images/pic03.jpg', alt='' style='font-size:10px')
+                                .col.s9
+                                    p.credit(style='font-size:14px')
+                                        strong.red-text Sagar Chaudhari
+                                        span
+                                            br
+                                            | B.Arch, M.Arch (U.D)
+                                            br
+                                            | Head, Sparc Associates
+
+                
+
+            .row
+                each person in people
+                    .col.s12.l4
+                        .card.grey.lighten-3
+                            .card-content
+                                
+                                blockquote
+                                    p #{ person.comments }
+                            .card-action
+                                .row.no-margin
+                                    //- .col.s3
+                                        img.circle.responsive-img(src='images/pic03.jpg', alt='' style='font-size:10px')
+                                    .col.s9
+                                        p.credit(style='font-size:14px')
+                                            strong.red-text #{ person.name }
+                                            span
+                                                br
+                                                | #{ person.education }
+                                                br
+                                                | #{ person.position }
 
                
         include ./footer.pug

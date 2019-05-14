@@ -14,9 +14,9 @@ router.get('/contact', function (req, res) {
     });
 });
 
-router.get('/about', function (req, res) {
-    res.render('about');
-});
+// router.get('/about', function (req, res) {
+//     res.render('about');
+// });
 
 router.get('/support', function (req, res) {
     res.render('support');
@@ -91,6 +91,9 @@ router.post('/person/:id/delete', person_controller.person_delete_post);
 
 //delete ll team
 router.get('/person/delete/all/team',person_controller.person_delete_all_get);
+
+
+router.get('/about', person_controller.about_get);
 
 /// ENQUIRY ROUTES ///
 
