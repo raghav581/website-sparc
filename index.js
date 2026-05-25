@@ -1,7 +1,7 @@
 /* eslint-env node */
 
 // ----- Initialize Express -----
-
+require('dotenv').config()
 var express = require('express')
 var app = express()
 
@@ -19,7 +19,9 @@ var routes = require('./routes.js')
 var mongoose = require('mongoose')
 
 //Set up default mongoose connection
-mongoose.connect(dbport, { useNewUrlParser: true })
+mongoose.connect(dbport, { useNewUrlParser: true, useUnifiedTopology: true })
+	.then(() => console.log('MongoDB connected'))
+	.catch(err => console.error('MongoDB connection error:', err))
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise
 //Get the default connection

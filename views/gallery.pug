@@ -29,7 +29,7 @@ html(lang='en')
                             .placeholder
                                 .gallery-curve-wrapper
                                     a.gallery-cover.gray
-                                        img.responsive-img(src=project.images[0], alt='project')
+                                        img.responsive-img(src='/project/image/'+project.id, alt='project')
                                     .gallery-header
                                         span #{project.name}
                                     .gallery-body
@@ -47,10 +47,13 @@ html(lang='en')
 
                                         .carousel-wrapper
                                             .carousel
-                                                //- a.carousel-item(href='#one!')	
-                                                each image in project.images
-                                                    a.carousel-item(href=image, target="_blank")
-                                                        img.bordered-sassy(src=image)
+                                                if project.images && project.images.length
+                                                    each image in project.images
+                                                        a.carousel-item(href=image, target="_blank")
+                                                            img.bordered-sassy(src=image)
+                                                else
+                                                    a.carousel-item(href='/project/image/'+project.id, target="_blank")
+                                                        img.bordered-sassy(src='/project/image/'+project.id)
 
                                         .section.center
                                             iframe.full-width(height="400px" src=project.youtubeUrl+"&origin=http://www.sparcassociates.com/" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)

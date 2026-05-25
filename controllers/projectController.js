@@ -4,11 +4,16 @@ const fs = require('fs')
 const mime = require('mime')
 const multer = require('multer')
 
-const aws = require('aws-sdk')
-const S3_BUCKET = process.env.S3_BUCKET
-aws.config.region = process.env.AWS_REGION
+const path = require('path')
+const catalogImage = require('../utils/catalogImage')
 
-const s3 = new aws.S3()
+// Local upload directory (must exist)
+const UPLOAD_DIR = path.join(__dirname, '..', 'www', 'catalog', 'project')
+
+// ensure upload directory exists
+if (!fs.existsSync(UPLOAD_DIR)) {
+	fs.mkdirSync(UPLOAD_DIR, { recursive: true })
+}
 // -----
 
 var Project = require('../models/project')
@@ -29,17 +34,7 @@ exports.project_list = function(req, res) {
 }
 
 exports.project_edit = function(req, res) {
-	// Project.find({})
-	//     .exec(function (err, list_projects) {
-	//         if (err) {
-	//             throw err;
-	//         }
-	//Successful, so render
-	res.render('edit-projects' /* , {
-                projects: list_projects
-            } */)
-	//res.send(list_projects);
-	// });
+	res.render('edit-projects')
 }
 
 exports.project_list_api = function(req, res) {
@@ -125,27 +120,24 @@ exports.project_create_post = function(req, res) {
 // Handle Project delete on POST.
 exports.project_delete_post = function(req, res) {
 	Project.findById(req.params.id, function(err, data) {
-		var params = {
-			Bucket: S3_BUCKET,
-			Delete: {
-				Objects: []
-			}
+		if (err) return res.status(500).send(err)
+
+		// remove image files from local upload dir
+		if (Array.isArray(data.images)) {
+			data.images.forEach(image => {
+				const filename = path.basename(image)
+				const filePath = path.join(UPLOAD_DIR, filename)
+				try {
+					if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
+				} catch (e) {
+					console.error('Error deleting file', filePath, e)
+				}
+			})
 		}
 
-		// console.log(data)
-
-		data.images.forEach(image => {
-			params.Delete.Objects.push({ Key: image.split('/').slice(-1)[0] })
-		})
-
-		s3.deleteObjects(params, function(err, data) {
-			// console.log(data)
-
-			if (err) return res.status(500).send(error)
-			Project.findByIdAndRemove(req.params.id, function(err) {
-				if (err) return res.status(500).send(error)
-				return res.send(true)
-			})
+		Project.findByIdAndRemove(req.params.id, function(err) {
+			if (err) return res.status(500).send(err)
+			return res.send(true)
 		})
 	})
 
@@ -212,57 +204,96 @@ exports.project_update_post = function(req, res) {
 	//res.send('NOT IMPLEMENTED: Project update POST');
 }
 
-// Display detail image for a specific Enquiry.
 exports.project_image_get = function(req, res) {
 	Project.findById(req.params.id).exec(function(err, project) {
 		if (err) {
 			throw err
 		}
+		if (!project) {
+			return res.status(404).send('Project not found')
+		}
 
-		res.contentType(project.image.contentType)
-		res.send(project.image.data)
+		if (project.image && project.image.data && project.image.data.length) {
+			res.contentType(project.image.contentType || 'image/png')
+			return res.send(project.image.data)
+		}
 
-		//res.send(list_products);
+		const catalogFile = catalogImage.resolveProjectImagePath(project)
+		if (catalogFile) {
+			return catalogImage.sendImageFile(res, catalogFile)
+		}
+
+		return catalogImage.sendPlaceholder(res)
 	})
-	// res.send('NOT IMPLEMENTED: Enquiry detail: ' + req.params.id);
 }
 
+// Provide a simple upload endpoint URL and public URL for local storage
 exports.project_sign_s3_put_get = (req, res) => {
 	const fileName = req.query.fileName
 	const fileType = req.query.fileType
 
-	const s3Params = {
-		Bucket: S3_BUCKET,
-		Key: fileName,
-		Expires: 60,
-		ContentType: fileType,
-		ACL: 'public-read'
-	}
+	if (!fileName) return res.status(400).send('fileName required')
 
-	s3.getSignedUrl('putObject', s3Params, (err, data) => {
+	const returnData = {
+		// Client should PUT the file to the upload endpoint
+		signedRequest: `/api/project/upload?fileName=${encodeURIComponent(fileName)}`,
+		// Public URL where file will be available
+		url: `/catalog/project/${fileName}`
+	}
+	res.send(JSON.stringify(returnData))
+}
+
+// Handle file upload POST to save file locally
+exports.project_upload_post = (req, res) => {
+	const storage = multer.diskStorage({
+		destination: function(req, file, cb) {
+			cb(null, UPLOAD_DIR)
+		},
+		filename: function(req, file, cb) {
+			const fileName = req.query.fileName || file.originalname
+			cb(null, fileName)
+		}
+	})
+
+	const upload = multer({ storage: storage }).single('file')
+
+	upload(req, res, function(err) {
 		if (err) {
-			console.error(err)
+			console.error('Upload error', err)
 			return res.status(500).send(err)
 		}
-		const returnData = {
-			signedRequest: data,
-			url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
-		}
-		res.send(JSON.stringify(returnData))
+		// Return the public URL
+		const fileName = req.query.fileName || (req.file && req.file.filename)
+		res.send({ url: `/catalog/project/${fileName}` })
 	})
 }
 
+// Accept raw PUT upload (used by client fetch PUT with file body)
+exports.project_upload_put = (req, res) => {
+	const fileName = req.query.fileName
+	if (!fileName) return res.status(400).send('fileName required')
+	const filePath = path.join(UPLOAD_DIR, fileName)
+
+	const writeStream = fs.createWriteStream(filePath)
+	req.pipe(writeStream)
+
+	writeStream.on('finish', () => {
+		res.send({ url: `/catalog/project/${fileName}` })
+	})
+	writeStream.on('error', err => {
+		console.error('Error writing file', err)
+		res.status(500).send(err)
+	})
+}
+
+// Delete a local file
 exports.project_s3_delete_get = (req, res) => {
 	const filenameToRemove = req.query.fileName
-
-	const s3Params = {
-		Bucket: S3_BUCKET,
-		Key: filenameToRemove
-	}
-
-	s3.deleteObject(s3Params, function(err, data) {
+	if (!filenameToRemove) return res.status(400).send('fileName required')
+	const filePath = path.join(UPLOAD_DIR, filenameToRemove)
+	fs.unlink(filePath, function(err) {
 		if (err) {
-			console.error(err)
+			console.error('Error deleting file', filePath, err)
 			return res.status(500).send(err)
 		}
 		res.send(true)

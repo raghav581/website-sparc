@@ -1,8 +1,12 @@
 var Enquiry = require('../models/enquiry')
 var Product = require('../models/product')
 
-const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const nodemailer = require('nodemailer')
+const transporter = nodemailer.createTransport({
+	sendmail: true,
+	newline: 'unix',
+	path: '/usr/sbin/sendmail'
+})
 
 // Display list of all Enquirys.
 exports.enquiry_list = function(req, res) {
@@ -96,7 +100,13 @@ exports.enquiry_create_post = function(req, res) {
                         <br>Phone: ${enquiry.phone} </p>`
         }
 
-        sgMail.send(email).catch(console.error)
+		transporter.sendMail(email, (err, info) => {
+			if (err) {
+				console.error(err)
+			} else {
+				console.log('Email sent:', info && info.response)
+			}
+		})
 
 		enquiry.save(function(err) {
 			if (err) {
@@ -135,7 +145,13 @@ exports.enquiry_contact_create_post = function(req, res) {
                     <br>Phone: ${enquiry.phone} </p>`
     }
 
-    sgMail.send(email).catch(console.error)
+	transporter.sendMail(email, (err, info) => {
+		if (err) {
+			console.error(err)
+		} else {
+			console.log('Email sent:', info && info.response)
+		}
+	})
 	//res.send('NOT IMPLEMENTED: Enquiry create POST');
 
 	enquiry.save(function(err) {

@@ -69,7 +69,7 @@ router.post("/login", function(req, res) {
 // Require controller modules.
 var enquiry_controller = require("./controllers/enquiryController");
 var product_controller = require("./controllers/productController");
-// var productcategory_controller = require('./controllers/productcategoryController');
+var productcategory_controller = require('./controllers/productcategoryController');
 var project_controller = require("./controllers/projectController");
 var person_controller = require("./controllers/personController");
 
@@ -171,6 +171,10 @@ router.get(
   "/api/project/image/delete",
   project_controller.project_s3_delete_get
 );
+
+// Local file upload endpoint (replaces S3 signed upload)
+router.post('/api/project/upload', project_controller.project_upload_post);
+router.put('/api/project/upload', project_controller.project_upload_put);
 
 /* Will be implemented in future if needed ---- *
 /// CATEGORY ROUTES ///

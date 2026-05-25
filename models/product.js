@@ -34,6 +34,10 @@ var ProductSchema = new Schema({
             max: 15,
             default: 'png'
         }
+    },
+    imagetype: {
+        type: String,
+        max: 10
     }
     /*categories: [{
         type: Schema.ObjectId,

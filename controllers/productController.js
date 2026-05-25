@@ -6,6 +6,7 @@
 var fs = require('fs');
 var mime = require('mime');
 var multer = require('multer');
+var catalogImage = require('../utils/catalogImage');
 
 
 // -----
@@ -162,22 +163,22 @@ exports.product_update_post = function (req, res) {
         if (err) {
             throw err;
         } else {
+            var update = {
+                name: req.body.product_name,
+                description: req.body.product_description,
+                cost: req.body.product_cost
+            };
 
-            product.name = req.body.product_name;
-            product.description = req.body.product_description;
-            product.cost = req.body.product_cost;
-            product._id = req.params.id;
-            product.imagetype = mime.getExtension(req.files[0].mimetype);
+            if (req.files && req.files.length) {
+                update.imagetype = mime.getExtension(req.files[0].mimetype);
+            }
 
-
-            Product.findByIdAndUpdate(req.params.id, product, {}, function (err) {
+            Product.findByIdAndUpdate(req.params.id, update, {}, function (err) {
                 if (err) {
                     throw err;
                 }
-                //successful - redirect to new book record.
                 res.redirect('/dashboard/products');
             });
-
         }
     });
 
@@ -186,19 +187,29 @@ exports.product_update_post = function (req, res) {
 
 
 
-// Display detail image for a specific Enquiry.
 exports.product_image_get = function (req, res) {
     Product.findById(req.params.id)
         .exec(function (err, product) {
             if (err) {
                 throw err;
             }
+            if (!product) {
+                return res.status(404).send('Product not found');
+            }
 
-            res.contentType(product.image.contentType);
-            res.send(product.image.data);
+            if (product.image && product.image.data && product.image.data.length) {
+                res.contentType(product.image.contentType || 'image/png');
+                return res.send(product.image.data);
+            }
 
-            //res.send(list_products);
+            var catalogFile = catalogImage.findProductCatalogFile(
+                product._id,
+                product.imagetype
+            );
+            if (catalogFile) {
+                return catalogImage.sendImageFile(res, catalogFile);
+            }
 
+            return catalogImage.sendPlaceholder(res);
         });
-    // res.send('NOT IMPLEMENTED: Enquiry detail: ' + req.params.id);
 };

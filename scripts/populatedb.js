@@ -1,12 +1,12 @@
 #! /usr/bin/env node
 
 console.log('This script populates some test projects, products, productCategorys and projectinstances to your database. Specified database as argument - e.g.: populatedb mongodb://your_username:your_password@your_dabase_url');
-
+require('dotenv').config()
 // Get arguments passed on command line
-var userArgs = process.argv.slice(2);
-if (!userArgs[0].startsWith('mongodb://')) {
-    console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
-    return
+var userArgs = process.env.MONGODB_URI; //process.argv.slice(2);
+if (!userArgs.startsWith('mongodb://')) {
+    // console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
+    // return
 }
 
 var async = require('async')
@@ -18,7 +18,7 @@ var Enquiry = require('../models/enquiry')
 
 
 var mongoose = require("mongoose");
-var mongoDB = userArgs[0];
+var mongoDB = userArgs;
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
