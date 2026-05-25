@@ -56,7 +56,7 @@ html(lang='en')
                                                         img.bordered-sassy(src='/project/image/'+project.id)
 
                                         .section.center
-                                            iframe.full-width(height="400px" src=project.youtubeUrl+"&origin=http://www.sparcassociates.com/" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+                                            iframe.full-width(height="400px" src=project.youtubeUrl+"?&origin="+encodeURIComponent("http://www.sparcassociates.com/") frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
 
 
                                     .gallery-action

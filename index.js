@@ -61,8 +61,7 @@ var favicon = require('serve-favicon')
 app.use(favicon('./www/favicon.ico'))
 
 // -----
-
-app.use(express.static('www'))
+app.use(express.static(path.join(__dirname, 'www')));
 
 // If the fonts are in a specific folder not covered by the above:
 app.use('/fonts', express.static(path.join(__dirname, 'www/fonts')));
