@@ -2,6 +2,7 @@
 
 // ----- Initialize Express -----
 require('dotenv').config()
+var path = require('path')
 var express = require('express')
 var app = express()
 
@@ -63,6 +64,8 @@ app.use(favicon('./www/favicon.ico'))
 
 app.use(express.static('www'))
 
+// If the fonts are in a specific folder not covered by the above:
+app.use('/fonts', express.static(path.join(__dirname, 'www/fonts')));
 // -----
 
 app.use('/', routes)
